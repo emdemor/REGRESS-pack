@@ -21,16 +21,32 @@ Informations
 
 import regress as rg
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
-# Checking
-X_obs = np.array([0.00,0.05,0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50])
-y_obs = np.array([16.1,26.6,31.0,42.6,47.5,52.0,64.3,71.8,73.9,83.2,88.5])
-y_err = np.array([2.00,2.00,2.10,2.20,2.20,2.30,2.30,2.40,2.40,2.50,2.50])
+
+dataset = pd.read_csv('data/data_test.csv')
+
+X     = dataset['X'].values.reshape(-1,1)
+y     = dataset['y'].values.reshape(-1,1)
+y_err = dataset['Erro'].values.reshape(-1,1)
 
 
-fit_lin = rg.linear(X = X_obs,y = y_obs, y_errors = False)
-fit_lin_err = rg.linear(X = X_obs,y = y_obs, y_errors = y_err)
+fit = rg.linear(X = X,y = y, y_errors = y_err)
+y_pred = fit.predict(X)
+
+fit.plot(xlabel='i (A)',ylabel='U (V)',color='red').savefig('linear_fit.png')
 
 
-#fit_lin_err.plot(xlabel='i (A)',ylabel='U (V)')
-fit_lin_err.plot(xlabel='i (A)',ylabel='U (V)',color='red')
+print(fit.predict_error(1))
+print(fit.predict_error([1,2]))
+
+# print('linear parameters: ',fit_lin.estimates)
+
+#fit_quad = rg.polynomial(X = X,y = y, y_errors = y_err,order=2)
+#fit_quad.plot(xlabel='i (A)',ylabel='U (V)',color='red').savefig('quad_fit.png')
+#print('quadratic parameters: ',fit_quad.estimates)
+
+
+# fit_lin = rg.linear(X = X,y = y, y_errors = False)
+# fit_lin.plot(xlabel='i (A)',ylabel='U (V)',color='red').savefig('linear_fit.png')
+# print('linear parameters: ',fit_lin.estimates)

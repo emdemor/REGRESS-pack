@@ -24,37 +24,69 @@ import matplotlib.pyplot as plt
 
 class linear:
 
-	def __init__(self,X,y,y_errors):
+	def __init__(self,X=[],y=[],y_errors=[],data=False):
 
+		# Fixing order since this just a polinomial regression of first order. LOL.
+		# Users dont like complications
 		order = 1
 
+		# initializing status and self parameters
+		__STATUS_OK__ = True
 		self.parameters = []
-		self.estimates  = []
+		self.par_estimate  = []
 		self.cov_matrix = []
 		self.par_error  = []
+
+		# received parameters
+		self.X		    = X
+		self.y          = y
 		self.y_errors   = y_errors
 		self.fitted     = True
 		self.order      = order
+		self.n          = len(self.X)
 
 
-
-		# Testing input values
-		self.X		    = X
-		self.y          = y
-
-		x     = self.X
-		f     = self.y
-
-		
+		# The method onle accepts a bool for errors if it was False
 		if type(self.y_errors) == bool:
 			if self.y_errors:
 				print('[Error] You must pass the values of errors')
-			errors = np.ones(len(self.X))
+
+			# choose a list of ones to errors variable	
+			self.y_errors= np.ones(len(self.X))
+
 			self.remove_errors = True
+
+		# The method onle accepts a bool for errors if it was False	
 		else:
-			errors = self.y_errors
 			self.remove_errors = False
 			
+
+		# Checking if the array parameters has the same size
+		if(len(self.y)==self.n):
+			# if it everithing all right, testing the shape
+			# corrects if the shape is not right
+			if(np.shape(self.X) == (self.n,1)):
+				self.X = np.reshape(self.X,(-1,))
+				#self.X = np.reshape(self.X,(-1,1))
+
+			if(np.shape(self.y) == (self.n,1)):
+				self.y = np.reshape(self.y,(-1,))
+
+			if(np.shape(self.y_errors) == (self.n,1)):
+				self.y_errors = np.reshape(self.y_errors,(-1,))
+
+		else:
+			print('[error]: Number of feature vectors, targets are not the same.')
+			__STATUS_OK__ = False
+
+
+		# compacting variable labels
+		x = self.X
+
+		f = self.y
+
+		errors = self.y_errors
+
 		powers = np.arange(1+self.order)
 
 		_X  = np.array(list(map(lambda n: np.divide(np.power(self.X,n),errors),powers)))
@@ -75,7 +107,7 @@ class linear:
 
 		self.cov_matrix = MI
 
-		self.estimates  = np.dot(MI,V)
+		self.par_estimate  = np.dot(MI,V)
 
 		self.par_variance = [MI[index,index] for index in range(1+order)]
 		self.par_error    = [np.sqrt(MI[index,index]) for index in range(1+order)]
@@ -83,12 +115,37 @@ class linear:
 
 	def predict(self,X):
 		powers = np.arange(1+self.order)
-		k =self.estimates
-		# _sum_ = 0;
-		# for order in range(1+self.order):
-		# 	_sum_ += k[order] * X ** order
+		k =self.par_estimate
+		if type(X)==list:
+			X = np.array(X)
 
-		return np.sum(list(map(lambda n: np.multiply(k[n],np.power(X,n)),powers)),axis=0)
+		if (type(X) == int) or (type(X) == float):
+			_sum_ = 0;
+			for order in range(0,1+self.order):
+				_sum_ += k[order] * X ** order
+			return _sum_
+		else:
+			return np.sum(list(map(lambda n: np.multiply(k[n],np.power(X,n)),powers)),axis=0)
+
+
+	def predict_error(self,X):
+		powers = np.arange(1+self.order)
+		k = self.par_estimate
+		s = self.par_error
+		#print(s)
+
+		if type(X)==list:
+			X = np.array(X)
+
+		if (type(X) == int) or (type(X) == float):
+			_sum_ = 0;
+			for order in range(0,1+self.order):
+				_sum_ += (s[order] * X ** order) ** 2
+
+			return _sum_ ** 0.5
+		else:
+			#return
+			return np.sqrt(np.sum(list(map(lambda n: np.power(np.multiply(s[n],np.power(X,n)),2),powers)),axis=0))
 
 	def plot(self,**kwargs):
 		#print("the keyword arguments are:", kwargs)
@@ -184,7 +241,12 @@ class linear:
 		plt.close()
 		#plt.scatter(self.X,self.y,**scatter_opt)
 		plt.errorbar(x=self.X,y=self.y,yerr=self.y_errors,**bars_opt)
+		plt.fill_between(X_mod,
+			self.predict(X_mod)+self.predict_error(X_mod),
+			self.predict(X_mod)-self.predict_error(X_mod),
+			color='gray', alpha=0.2,label='1$\sigma$ confidence region')
 		plt.plot(X_mod,self.predict(X_mod),**line_opt)
+
 		plt.legend(loc="upper left")
 		plt.xlabel(xlabel)
 		plt.ylabel(ylabel)
