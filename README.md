@@ -1,6 +1,6 @@
 # REGRESS package
 
-Regress is a simple python package to evaluate analitycal regression methods
+Regress is a simple python package to evaluate analytical regression methods
 for linear models in their parameters.
 
 <p align="center">
