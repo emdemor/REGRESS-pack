@@ -237,18 +237,17 @@ class polynomial:
 
 		Arguments
 		----------
-		Not documented yet
+		nPoints (int,*opt): Number of poits to plot the function
 
 		Returns
 		----------
-		Not documented yet
+		plt (matplotlib.pyplot)
 		
 		'''
 		if not self.fitted:
 			print('[error]: You must train first.')
 
 		else:
-			#print("the keyword arguments are:", kwargs)
 			opt = kwargs
 			scatter_opt  =  {'s':		   None,
 							 'c':		   None,

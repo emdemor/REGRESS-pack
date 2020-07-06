@@ -8,3 +8,4 @@ Created on Fri Jun 12 02:57:59 2020
 
 from .linear import *
 from .polynomial import *
+from .multipoly import *
