@@ -4,7 +4,7 @@
 """
 Description
 ----------
-Regress a simple python package to evaluate analitycal regression methods
+Regress is a simple python package to evaluate analitycal regression methods
 for model linear on its parameters.
 
 Informations
@@ -45,7 +45,7 @@ if False:
 
 
 
-D = 2
+D = 3
 O = 2
 
 
@@ -63,7 +63,7 @@ if D == 2:
     X = dataset.iloc[:,0:-2].values
     y = dataset.iloc[:,2].values.reshape(-1,1)
     y_err =  dataset.iloc[:,3].values.reshape(-1,1)
-    fit = rg.multipoly(X,y,y_err,order=O)
+    fit = rg.multipoly(X,y,y_errors = y_err,order=O)
     fit.train()
 
 if D == 3:
@@ -76,7 +76,7 @@ if D == 3:
     #print(y_err)
     
 
-print(fit.par_matrix)
+print(fit.par_estimate)
 
 
 # D = 3;

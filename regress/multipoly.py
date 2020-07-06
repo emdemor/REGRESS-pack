@@ -5,8 +5,8 @@
 
 Description
 ----------
-This module receives feature, target and error coluns and evaluates
-the unidimensional linear regression. 
+This module receives feature, target and error columns and evaluates
+the multidimensional polynomial regression. 
 
 Informations
 ----------
@@ -31,12 +31,12 @@ class multipoly:
 	Description
 	----------
 	Instances of this class carry the properties
-	of a simple linear regression.
+	of a polynomial regression.
 
 	Arguments
 	----------
-	X (list or numpy.array): features for regression
-	y (list or numpy.array): target values
+	X (numpy.array): features for regression
+	y (numpy.array): target values
 	y_err (list, numpy.array or False): erros on target values
 	data (bool): NOT IMPLEMENTED YET
 
@@ -57,7 +57,7 @@ class multipoly:
 	def __init__(self,
 			X=np.array([]),
 			y=np.array([]),
-			y_errors=np.array([]),
+			y_errors=False,
 			order = 2
 		):
 
@@ -97,7 +97,7 @@ class multipoly:
 
 		# Checking if the array parameters has the same size
 		if(len(self.y)==self.n):
-			# if it everithing all right, testing the shape
+
 			# corrects if the shape is not right
 			if(len(np.shape(self.X)) != 2 ):
 				print('[error] Features are not in the correct shape')
@@ -134,11 +134,47 @@ class multipoly:
 		None
 
 		'''
+
+		# Evaluating the tensor variables
+		list_Q,list_Q_comps = self.__get_tensor_structure()
+
+		# First order
+		if self.order == 1:
+			# Obtaining the matrix structure of the linear system
+			MI,V = self.__linear_system_struct_1(list_Q)
+
+		# Order two
+		if self.order == 2:
+			# Obtaining the matrix structure of the linear system
+			MI,V = self.__linear_system_struct_2(list_Q)
+
+		# Solving the linear system for the parameter vector
+		k_list = list(np.array(np.matmul(MI,V)).reshape(self.par_dim,))
+
+		# Wrinting the parameter vector as a symmetric matrix
+		k = np.zeros((1+self.order,1+self.order))
+
+
+		# for i,j in product(range(self.X_dim),range(self.X_dim)):
+		# 	if i>=j:
+		# 		k[i,j] = k[j,i] = k_list[i+j]
+
+		# Updating parameters
+		# self.par_matrix    = k
+		self.cov_matrix    = MI
+		self.par_estimate  = k_list
+		self.par_variance  = [MI[index,index] for index in range(self.par_dim)]
+		self.par_error     = [np.sqrt(MI[index,index]) for index in range(self.par_dim)]
+		self.fitted        = True
+
+
+	def __get_tensor_structure(self):
+
 		# List of auiliar structures of data
 		list_Q = []
 		list_Q_comps = []
 
-		for dim_Q in range(1+self.order ** 2):
+		for dim_Q in range(1+2*self.order):
 
 			if dim_Q == 0:
 				Q = np.sum(1/np.power(self.y_errors,2))
@@ -156,25 +192,60 @@ class multipoly:
 				indexes_Q = [ele for ele in product(range(0, self.X_dim), repeat = dim_Q)] 
 				Q = np.zeros(shape_Q)
 				for index_list in indexes_Q:
-					#[ () for j in range(self.n)]
-					#list_prod = np.array([np.array([self.X[j,i] for i in index_list]).prod() for j in range(self.n)])
-
 					Q_val = np.array([np.array([self.X[j,i]/(self.y_errors[j]**2) for i in index_list]).prod() for j in range(self.n)]).sum()
-
-					# if dim_Q==2: print(shape_Q)
 					Q = self.__update_value_from_index(Q,index_list,Q_val)
 			
 			list_Q.append(Q)
 			list_Q_comps.append(int(binom(self.X_dim + dim_Q-1,dim_Q)))
-		
-		#print(list_Q_comps)
 
+		return [list_Q,list_Q_comps]
+
+	def __update_value_from_index(self,np_arr,indexes,new_value):
+	    
+	    s     = np_arr.size
+	    shape = np_arr.shape
+	    enum  = list(np.ndenumerate(np_arr))
+	    sing_index = [elem[0] for elem in enum].index(indexes)
+	    np_arr_temp = np_arr.reshape(s,)
+	    np_arr_temp[sing_index] = new_value
+	    return np_arr_temp.reshape(shape)
+
+
+	def __part(self,np_arr,indexes):
+	    
+	    s     = np_arr.size
+	    shape = np_arr.shape
+	    enum  = list(np.ndenumerate(np_arr))
+	    sing_index = [elem[0] for elem in enum].index(indexes)
+	    np_arr_temp = np_arr.reshape(s,)
+	    return np_arr_temp[sing_index]
+
+	def __linear_system_struct_1(self,list_Q):
 		if self.order == 1:
-			None
+			A = list_Q[0]
+			B = list_Q[1]
+			C = list_Q[2]
+			F = [np.array([self.y[j] / (self.y_errors[j] ** 2) for j in range(self.n)]).sum()]
+			G = [np.array([self.y[j]*self.X[j,i] / (self.y_errors[j] ** 2) for j in range(self.n)]).sum() for i in range(self.X_dim)]
+
+			# First matrix row
+			m = [[0 for i in range(self.par_dim)] for j in range(self.par_dim)]
+			m[0][0] = list_Q[0]
+			for i in range(self.X_dim):
+				m[0][1+i] = m[1+i][0] = B[i]
+				for j in range(self.X_dim):
+					m[1+i][1+j] = C[i][j]
+			M = np.matrix(m)
+			MI = np.linalg.inv(M)
+			V = np.matrix((F+G)).T
+
+			return [MI,V]
+		else:
+			return False
 
 
-		# ############################################################
-		# Order Two
+
+	def __linear_system_struct_2(self,list_Q):
 		if self.order == 2:
 			A = list_Q[0]
 			B = list_Q[1]
@@ -217,93 +288,12 @@ class multipoly:
 
 
 			M = np.matrix(m)
-			#M2 = self.__evaluate_matrix_2(list_Q)
 
 			MI = np.linalg.inv(M)
 
 			V = np.matrix((F+G+H)).T
 
-			#print(V)
-
-			k_list = list(np.array(np.matmul(MI,V)).reshape(self.par_dim,))
-
-
-			# passing parameters to matrix
-			k = np.zeros((1+self.order,1+self.order))
-			for i,j in product(range(self.X_dim),range(self.X_dim)):
-				if i>=j:
-					k[i,j] = k[j,i] = k_list[i+j]
-
-			self.par_matrix    = k
-			self.cov_matrix    = MI
-			self.par_estimate  = k_list
-			self.par_variance  = [MI[index,index] for index in range(self.par_dim)]
-			self.par_error     = [np.sqrt(MI[index,index]) for index in range(self.par_dim)]
-			self.fitted        = True
-
-
-	def __update_value_from_index(self,np_arr,indexes,new_value):
-	    
-	    s     = np_arr.size
-	    shape = np_arr.shape
-	    enum  = list(np.ndenumerate(np_arr))
-	    sing_index = [elem[0] for elem in enum].index(indexes)
-	    np_arr_temp = np_arr.reshape(s,)
-	    np_arr_temp[sing_index] = new_value
-	    return np_arr_temp.reshape(shape)
-
-	def __part(self,np_arr,indexes):
-	    
-	    s     = np_arr.size
-	    shape = np_arr.shape
-	    enum  = list(np.ndenumerate(np_arr))
-	    sing_index = [elem[0] for elem in enum].index(indexes)
-	    np_arr_temp = np_arr.reshape(s,)
-	    return np_arr_temp[sing_index]
-
-	def __evaluate_matrix_2(self,list_Q):
-		if self.order == 2:
-			A = list_Q[0]
-			B = list_Q[1]
-			C = list_Q[2]
-			D = list_Q[3]
-			E = list_Q[4]
-			F = [np.array([self.y[j] / (self.y_errors[j] ** 2) for j in range(self.n)]).sum()]
-			G = [np.array([self.y[j]*self.X[j,i] / (self.y_errors[j] ** 2) for j in range(self.n)]).sum() for i in range(self.X_dim)]
-			H = list([np.array([self.y[j]*self.X[j,i]*self.X[j,k] / (self.y_errors[j] ** 2) for j in range(self.n)]).sum() for i,k in product(range(self.X_dim),range(self.X_dim)) if i<=k])
-
-			# First matrix row
-			m = [[0 for i in range(self.par_dim)] for j in range(self.par_dim)]
-					
-			m[0][0] = list_Q[0]
-			count_C = 0
-			
-			for i in range(self.X_dim):
-
-				m[0][1+i] = m[1+i][0] = B[i]
-				for j in range(self.X_dim):
-					if i<=j:
-						m[0][1+self.X_dim+count_C] = m[1+self.X_dim+count_C][0] = C[i][j]
-
-						count_E = 0
-
-						for k in range(self.X_dim):
-							m[1+k][1+self.X_dim+count_C] = m[1+self.X_dim+count_C][1+k] = D[k][i][j]
-
-							for l in range(self.X_dim):
-
-								if k <= l:
-									m[1+self.X_dim+count_E][1+self.X_dim+count_C] = E[k][l][i][j]
-									count_E += 1
-
-						# m[1+self.X_dim+count_E][1+self.X_dim+count_C] = E[0][0][i][j]
-						
-						count_C += 1
-
-					m[1+i][1+j] = C[i][j]
-
-
-			return np.matrix(m)
+			return [MI,V]
 		else:
 			return False
 

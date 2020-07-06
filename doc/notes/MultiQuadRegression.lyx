@@ -1,0 +1,410 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{xcolor}
+
+\definecolor{green}{RGB}{0,133,108}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\dim}[1]{\textcolor{red}{#1}}
+{\textcolor{red}{#1}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\data}[1]{{\color{gray}\left(#1\right)}}
+{{\color{gray}\left(#1\right)}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+Quadratic Multidimensional Regression
+\end_layout
+
+\begin_layout Author
+Eduardo M.
+ de Morais
+\end_layout
+
+\begin_layout Standard
+Considering a structured dataset consisting of 
+\begin_inset Formula $N$
+\end_inset
+
+ sets 
+\begin_inset Formula $\left\{ \mathbf{X}_{k},f_{k},\sigma_{y_{k}}\right\} $
+\end_inset
+
+, where 
+\begin_inset Formula $\mathbf{X}_{k}$
+\end_inset
+
+ is the feature vector of dimension 
+\begin_inset Formula $2$
+\end_inset
+
+ and 
+\begin_inset Formula $f_{k}$
+\end_inset
+
+ the target behaviour.
+ Lets assume ae multinomial model model:
+\begin_inset Formula 
+\begin{equation}
+f_{k}=a+b^{i}x_{\left(i,k\right)}+c^{ij}x_{\left(i,k\right)}x_{\left(j,k\right)}\label{eq:1}
+\end{equation}
+
+\end_inset
+
+wjere 
+\begin_inset Formula $x_{\left(k\right)}$
+\end_inset
+
+ with 
+\begin_inset Formula $k=1,2,\cdots,\mathbb{D}$
+\end_inset
+
+, reprsents the 
+\begin_inset Formula $k$
+\end_inset
+
+-th feature of the vector 
+\begin_inset Formula $\mathbf{X}_{k}$
+\end_inset
+
+.
+ Here, we are using the Einstein sum notation.
+ The constants 
+\begin_inset Formula $a$
+\end_inset
+
+, 
+\begin_inset Formula $b^{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $c^{ij}$
+\end_inset
+
+ are the parameters wich values we want to find.
+ 
+\end_layout
+
+\begin_layout Standard
+A general totally symmetric matrix 
+\begin_inset Formula $M$
+\end_inset
+
+ of rank 
+\begin_inset Formula $R$
+\end_inset
+
+ and dimension 
+\begin_inset Formula $\mathcal{D}$
+\end_inset
+
+ has a number of independent componentes given by
+\begin_inset Formula 
+\[
+\text{number of components }=\binom{\mathbb{D}+R-1}{R}\,.
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\begin{pmatrix}.\\
+.
+\end{pmatrix}$
+\end_inset
+
+ is the binomial coefficient.
+ From (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:1"
+
+\end_inset
+
+), we can see clearly that 
+\begin_inset Formula $c^{ij}$
+\end_inset
+
+ is the components of a symmetric matrix.
+ Because of this, we can write:
+\begin_inset Formula 
+\[
+\text{number of components of }c^{ij}=\binom{\mathbb{D}+2-1}{2}\,
+\]
+
+\end_inset
+
+The total number of independent coefficients of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:1"
+
+\end_inset
+
+) is:
+\begin_inset Formula 
+\begin{equation}
+\text{number of parameters}=\binom{\mathbb{D}-1}{0}+\binom{\mathbb{D}}{1}+\binom{\mathbb{D}+1}{2}.\label{eq:1a}
+\end{equation}
+
+\end_inset
+
+For a general regression problem, where the maximum order of the multinomial
+ is 
+\begin_inset Formula $\mathbb{O}$
+\end_inset
+
+, the number of parameter is:
+\begin_inset Formula 
+\[
+n_{P}=\sum_{k=0}^{\mathbb{O}}\binom{\mathbb{D}+k-1}{k}.
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The expression of the square of (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:1"
+
+\end_inset
+
+) is:
+\begin_inset Formula 
+\begin{align*}
+f_{k}^{2}= & a^{2}+2ab^{i}x_{\left(i,k\right)}+\left(2ac^{ij}+b^{i}b^{j}\right)x_{\left(i,k\right)}x_{\left(j,k\right)}+\\
+ & +\left(2ad^{ijl}+2b^{i}c^{jl}\right)x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}+\\
+ & +\left(2b^{i}d^{jlr}+c^{ij}c^{lr}\right)x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}x_{\left(r,k\right)}\\
+ & +\left(2c^{ij}d^{lrs}\right)x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}x_{\left(r,k\right)}x_{\left(s,k\right)}+\\
+ & +\left(d^{ijl}d^{rst}\right)x_{\left(r,k\right)}x_{\left(s,k\right)}x_{\left(t,k\right)}x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Assuming that the data are uncorrelated, the Chi Squared function can be
+ writen as:
+\begin_inset Formula 
+\[
+\chi^{2}=\sum_{k}\frac{1}{\sigma_{k}^{2}}\left[f_{k}-f\left(x_{\left(k\right)}\right)\right]^{2}
+\]
+
+\end_inset
+
+or
+\begin_inset Formula 
+\begin{equation}
+\chi^{2}=\sum_{k}\left(\frac{1}{\sigma_{k}^{2}}f_{k}^{\,2}-\frac{2}{\sigma_{k}^{2}}f_{k}f+\frac{1}{\sigma_{k}^{2}}f^{2}\right)\,.\label{eq:2}
+\end{equation}
+
+\end_inset
+
+Defining the functions
+\begin_inset Formula 
+\begin{equation}
+A:=\sum_{k}\frac{1}{\sigma_{k}^{2}}\,\,\,\,B_{i}:=\sum_{k}\frac{1}{\sigma_{k}^{2}}x_{\left(i,k\right)}\,\,\,\,C_{ij}:=\sum_{k}\frac{1}{\sigma_{k}^{2}}x_{\left(i,k\right)}x_{\left(j,k\right)}\,\,\,\,\,;\label{eq:3}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+D_{ijl}:=\sum_{k}\frac{1}{\sigma_{k}^{2}}x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}\,\,\,\,\,\,E_{ijlr}=\sum_{k}\frac{1}{\sigma_{k}^{2}}x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}x_{\left(r,k\right)}\label{eq:4}
+\end{equation}
+
+\end_inset
+
+and
+\begin_inset Formula 
+\begin{equation}
+H:=\sum_{k}\frac{f_{k}}{\sigma_{k}^{2}}\,\,\,\,I_{i}:=\sum_{k}\frac{f_{k}}{\sigma_{k}^{2}}x_{\left(i,k\right)}\,\,\,\,J_{ij}:=\sum_{k}\frac{f_{k}}{\sigma_{k}^{2}}x_{\left(i,k\right)}x_{\left(j,k\right)}\,\,\,\,Z:=\sum_{k}\frac{f_{k}^{\,2}}{\sigma_{k}^{2}},\label{eq:5}
+\end{equation}
+
+\end_inset
+
+the 
+\begin_inset Formula $\chi^{2}$
+\end_inset
+
+ can be written as:
+\begin_inset Formula 
+\begin{align*}
+\chi^{2}= & Z-2aH-2b^{i}I_{i}-2c^{ij}J_{ij}+\\
+ & +a^{2}A+2ab^{i}B_{i}+\left(2ac^{ij}+b^{i}b^{j}\right)C_{ij}+\\
+ & +\left(2b^{i}c^{jk}\right)D_{ijk}+\left(c^{ij}c^{kr}\right)E_{ijkr}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Minimizing with respect to 
+\begin_inset Formula $a$
+\end_inset
+
+, 
+\begin_inset Formula $b$
+\end_inset
+
+'s and 
+\begin_inset Formula $c$
+\end_inset
+
+'s, we have the following system of equations:
+\begin_inset Formula 
+\begin{equation}
+aA+b^{i}B_{i}+c^{ij}C_{ij}+d^{ijk}D_{ijk}=H\label{eq:first-eq-1}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+aB_{v}+\left(b^{j}\right)C_{vj}+c^{jk}D_{vjk}+d^{ijk}E_{vijk}=I_{v}\label{eq:second-eq-1}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+aC_{vw}+b^{i}D_{ivw}+c^{ij}E_{ijvw}+d^{ijk}F_{vwijk}=J_{vw}\label{eq:third-eq-1}
+\end{equation}
+
+\end_inset
+
+In matrix notation, this system can be rewritten as
+\begin_inset Formula 
+\begin{equation}
+\left[\begin{array}{ccccccc}
+A & B_{1} & \cdots & B_{\mathbb{D}} & C_{11} & \cdots & C_{\mathbb{D}\mathbb{D}}\\
+B_{1} & C_{11} & \cdots & C_{1\mathbb{D}} & D_{111} & \cdots & D_{1\mathbb{D}\mathbb{D}}\\
+\vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots\\
+B_{D} & C_{\mathbb{D}1} & \cdots & C_{\mathbb{D}\mathbb{D}} & D_{\mathbb{D}11} & \cdots & D_{\mathbb{D}\mathbb{D}\mathbb{D}}\\
+C_{11} & D_{111} & \cdots & D_{\mathbb{D}111} & E_{1111} & \cdots & E_{11\mathbb{D}\mathbb{D}}\\
+\vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots\\
+C_{\mathbb{D}\mathbb{D}} & D_{a\mathbb{D}\mathbb{D}} & \cdots & D_{\mathbb{D}\mathbb{D}\mathbb{D}} & E_{11\mathbb{D}\mathbb{D}} & \cdots & E_{\mathbb{D}\mathbb{D}\mathbb{D}\mathbb{D}}
+\end{array}\right]\left[\begin{array}{c}
+a\\
+b^{1}\\
+\vdots\\
+b^{\mathbb{D}}\\
+c^{1}\\
+\vdots\\
+c^{\mathbb{D}}
+\end{array}\right]=\left[\begin{array}{c}
+A\\
+G^{1}\\
+\vdots\\
+G^{\mathbb{D}}\\
+H^{11}\\
+\vdots\\
+H^{\mathbb{D}\mathbb{D}}
+\end{array}\right]\label{eq:6}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

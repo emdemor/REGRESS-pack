@@ -1,0 +1,137 @@
+%% LyX 2.3.5-1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{xcolor}
+
+\definecolor{green}{RGB}{0,133,108}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+\global\long\def\dim#1{\textcolor{red}{#1}}%
+
+\global\long\def\data#1{{\color{gray}\left(#1\right)}}%
+
+\title{Quadratic Multidimensional Regression}
+\author{Eduardo M. de Morais}
+
+\maketitle
+Considering a structured dataset consisting of $N$ sets $\left\{ \mathbf{X}_{k},f_{k},\sigma_{y_{k}}\right\} $,
+where $\mathbf{X}_{k}$ is the feature vector of dimension $2$ and
+$f_{k}$ the target behaviour. Lets assume ae multinomial model model:
+\begin{equation}
+f_{k}=a+b^{i}x_{\left(i,k\right)}+c^{ij}x_{\left(i,k\right)}x_{\left(j,k\right)}\label{eq:1}
+\end{equation}
+wjere $x_{\left(k\right)}$ with $k=1,2,\cdots,\mathbb{D}$, reprsents
+the $k$-th feature of the vector $\mathbf{X}_{k}$. Here, we are
+using the Einstein sum notation. The constants $a$, $b^{i}$ and
+$c^{ij}$ are the parameters wich values we want to find. 
+
+A general totally symmetric matrix $M$ of rank $R$ and dimension
+$\mathcal{D}$ has a number of independent componentes given by
+\[
+\text{number of components }=\binom{\mathbb{D}+R-1}{R}\,.
+\]
+where $\begin{pmatrix}.\\
+.
+\end{pmatrix}$ is the binomial coefficient. From (\ref{eq:1}), we can see clearly
+that $c^{ij}$ is the components of a symmetric matrix. Because of
+this, we can write:
+\[
+\text{number of components of }c^{ij}=\binom{\mathbb{D}+2-1}{2}\,
+\]
+The total number of independent coefficients of (\ref{eq:1}) is:
+\begin{equation}
+\text{number of parameters}=\binom{\mathbb{D}-1}{0}+\binom{\mathbb{D}}{1}+\binom{\mathbb{D}+1}{2}.\label{eq:1a}
+\end{equation}
+For a general regression problem, where the maximum order of the multinomial
+is $\mathbb{O}$, the number of parameter is:
+\[
+n_{P}=\sum_{k=0}^{\mathbb{O}}\binom{\mathbb{D}+k-1}{k}.
+\]
+
+The expression of the square of (\ref{eq:1}) is:
+\begin{align*}
+f_{k}^{2}= & a^{2}+2ab^{i}x_{\left(i,k\right)}+\left(2ac^{ij}+b^{i}b^{j}\right)x_{\left(i,k\right)}x_{\left(j,k\right)}+\\
+ & +\left(2ad^{ijl}+2b^{i}c^{jl}\right)x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}+\\
+ & +\left(2b^{i}d^{jlr}+c^{ij}c^{lr}\right)x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}x_{\left(r,k\right)}\\
+ & +\left(2c^{ij}d^{lrs}\right)x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}x_{\left(r,k\right)}x_{\left(s,k\right)}+\\
+ & +\left(d^{ijl}d^{rst}\right)x_{\left(r,k\right)}x_{\left(s,k\right)}x_{\left(t,k\right)}x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}
+\end{align*}
+
+Assuming that the data are uncorrelated, the Chi Squared function
+can be writen as:
+\[
+\chi^{2}=\sum_{k}\frac{1}{\sigma_{k}^{2}}\left[f_{k}-f\left(x_{\left(k\right)}\right)\right]^{2}
+\]
+or
+\begin{equation}
+\chi^{2}=\sum_{k}\left(\frac{1}{\sigma_{k}^{2}}f_{k}^{\,2}-\frac{2}{\sigma_{k}^{2}}f_{k}f+\frac{1}{\sigma_{k}^{2}}f^{2}\right)\,.\label{eq:2}
+\end{equation}
+Defining the functions
+\begin{equation}
+A:=\sum_{k}\frac{1}{\sigma_{k}^{2}}\,\,\,\,B_{i}:=\sum_{k}\frac{1}{\sigma_{k}^{2}}x_{\left(i,k\right)}\,\,\,\,C_{ij}:=\sum_{k}\frac{1}{\sigma_{k}^{2}}x_{\left(i,k\right)}x_{\left(j,k\right)}\,\,\,\,\,;\label{eq:3}
+\end{equation}
+\begin{equation}
+D_{ijl}:=\sum_{k}\frac{1}{\sigma_{k}^{2}}x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}\,\,\,\,\,\,E_{ijlr}=\sum_{k}\frac{1}{\sigma_{k}^{2}}x_{\left(i,k\right)}x_{\left(j,k\right)}x_{\left(l,k\right)}x_{\left(r,k\right)}\label{eq:4}
+\end{equation}
+and
+\begin{equation}
+H:=\sum_{k}\frac{f_{k}}{\sigma_{k}^{2}}\,\,\,\,I_{i}:=\sum_{k}\frac{f_{k}}{\sigma_{k}^{2}}x_{\left(i,k\right)}\,\,\,\,J_{ij}:=\sum_{k}\frac{f_{k}}{\sigma_{k}^{2}}x_{\left(i,k\right)}x_{\left(j,k\right)}\,\,\,\,Z:=\sum_{k}\frac{f_{k}^{\,2}}{\sigma_{k}^{2}},\label{eq:5}
+\end{equation}
+the $\chi^{2}$ can be written as:
+\begin{align*}
+\chi^{2}= & Z-2aH-2b^{i}I_{i}-2c^{ij}J_{ij}+\\
+ & +a^{2}A+2ab^{i}B_{i}+\left(2ac^{ij}+b^{i}b^{j}\right)C_{ij}+\\
+ & +\left(2b^{i}c^{jk}\right)D_{ijk}+\left(c^{ij}c^{kr}\right)E_{ijkr}
+\end{align*}
+
+Minimizing with respect to $a$, $b$'s and $c$'s, we have the following
+system of equations:
+\begin{equation}
+aA+b^{i}B_{i}+c^{ij}C_{ij}+d^{ijk}D_{ijk}=H\label{eq:first-eq-1}
+\end{equation}
+\begin{equation}
+aB_{v}+\left(b^{j}\right)C_{vj}+c^{jk}D_{vjk}+d^{ijk}E_{vijk}=I_{v}\label{eq:second-eq-1}
+\end{equation}
+\begin{equation}
+aC_{vw}+b^{i}D_{ivw}+c^{ij}E_{ijvw}+d^{ijk}F_{vwijk}=J_{vw}\label{eq:third-eq-1}
+\end{equation}
+In matrix notation, this system can be rewritten as
+\begin{equation}
+\left[\begin{array}{ccccccc}
+A & B_{1} & \cdots & B_{\mathbb{D}} & C_{11} & \cdots & C_{\mathbb{D}\mathbb{D}}\\
+B_{1} & C_{11} & \cdots & C_{1\mathbb{D}} & D_{111} & \cdots & D_{1\mathbb{D}\mathbb{D}}\\
+\vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots\\
+B_{D} & C_{\mathbb{D}1} & \cdots & C_{\mathbb{D}\mathbb{D}} & D_{\mathbb{D}11} & \cdots & D_{\mathbb{D}\mathbb{D}\mathbb{D}}\\
+C_{11} & D_{111} & \cdots & D_{\mathbb{D}111} & E_{1111} & \cdots & E_{11\mathbb{D}\mathbb{D}}\\
+\vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots\\
+C_{\mathbb{D}\mathbb{D}} & D_{a\mathbb{D}\mathbb{D}} & \cdots & D_{\mathbb{D}\mathbb{D}\mathbb{D}} & E_{11\mathbb{D}\mathbb{D}} & \cdots & E_{\mathbb{D}\mathbb{D}\mathbb{D}\mathbb{D}}
+\end{array}\right]\left[\begin{array}{c}
+a\\
+b^{1}\\
+\vdots\\
+b^{\mathbb{D}}\\
+c^{1}\\
+\vdots\\
+c^{\mathbb{D}}
+\end{array}\right]=\left[\begin{array}{c}
+A\\
+G^{1}\\
+\vdots\\
+G^{\mathbb{D}}\\
+H^{11}\\
+\vdots\\
+H^{\mathbb{D}\mathbb{D}}
+\end{array}\right]\label{eq:6}
+\end{equation}
+
+\end{document}
