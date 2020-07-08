@@ -67,19 +67,26 @@ if D == 2:
     fit.train()
 
 if D == 3:
-    dataset = pd.read_csv('examples/ex04_multilin_3.csv')
-    X = dataset[['X','Y','Z']].values
-    y = dataset[['F']].values
-    y_err =  dataset[['Error']].values
-    fit = rg.multipoly(X,y,y_err,order=O)
+    
+    dataset = pd.read_csv('examples/Advertising.csv')
+    X = dataset[['TV', 'radio', 'newspaper']].values
+    y = dataset[['sales']].values
+    y_err =  False
+    fit = rg.multipoly(X,y,y_err,order=2)
     fit.train()
+#    dataset = pd.read_csv('examples/ex04_multilin_3.csv')
+#    X = dataset[['X','Y','Z']].values
+#    y = dataset[['F']].values
+#    y_err =  dataset[['Error']].values
+#    fit = rg.multipoly(X,y,y_err,order=O)
+#    fit.train()
     #print(y_err)
     
 
 #print(X)
 #print(np.sum(np.power(fit.predict(X)-y,2)))
 #print(fit.predict(X[-1]),' ',y[-1])
-#print(fit.predict(X))
+print(fit.predict(X))
 
 
 # D = 3;
