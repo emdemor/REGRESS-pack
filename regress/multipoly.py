@@ -24,7 +24,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import binom
 from itertools   import product 
-
+from .tools import _input_data
 
 class multipoly:
 	'''
@@ -55,69 +55,54 @@ class multipoly:
 	'''
 
 	def __init__(self,
-			X=np.array([]),
-			y=np.array([]),
-			y_errors=False,
-			order = 2
+			X         = False,
+			y         = False,
+			dataframe = False,
+	        features  = False,
+	        target_error = False,
+	        target    = False,
+			y_error  = False,
+			order     = 2
 		):
 
-		# initializing status and self parameters
-		self.parameters   = []
-		self.parameters_matrix = []
-		self.par_estimate = []
-		self.cov_matrix   = []
-		self.par_error    = []
-		self.par_dim      = 0
+		results = _input_data(X = X,
+	           				  y = y, 
+	           				  y_error = y_error,
+	           				  dataframe = dataframe,
+	        				  features  = features,
+	                          target_error = target_error,
+	                          target    = target
+	           				  )
 
-		# received parameters
-		self.X		  = X
-		self.X_dim    = 0
-		self.y        = y
-		self.y_errors = y_errors
-		self.fitted   = False
-		self.order    = order
-		self.n        = len(self.X)
-
-		# The method onle accepts a bool for errors if it was False
-		if type(self.y_errors) == bool:
-			if self.y_errors:
-				print('[Error] You must pass the values of errors')
-
-			# choose a list of ones to errors variable	
-			self.y_errors = np.ones(len(self.X)).reshape(-1,1)
-
-			self.remove_errors = True
-
-		# The method onle accepts a bool for errors if it was False	
-		else:
-			self.remove_errors = False
-			
-		print('X shape: ',self.X.shape)
-		print('y shape: ',self.y.shape)
-
-		# Checking if the array parameters has the same size
-		if(len(self.y)==self.n):
-
-			# corrects if the shape is not right
-			if(len(np.shape(self.X)) != 2 ):
-				print('[error] Features are not in the correct shape')
-			else:
-				self.X_dim = len(self.X[0])
-				self.par_dim = int(np.sum([binom(self.X_dim+k-1,k) for k in range(0,self.order+1)]))
-
-				print("ordem polinomial: ",self.order)
-				print("qtd. atributos  : ",self.X_dim)
-				print("parametr. livres: ",self.par_dim)
-
-			if(np.shape(self.y) == (self.n,1)):
-				self.y = np.reshape(self.y,(-1,))
-
-			if(np.shape(self.y_errors) != (self.n,1)):
-				print('[error] Target is not in the correct shape')
+		if not results['status']:
+			print('[error]: Unable to import dataset.')
 
 		else:
-			print('[error]: Number of feature vectors, targets are not the same.')
 
+			# initializing status and self parameters
+			self.parameters   = []
+			self.parameters_matrix = []
+			self.par_estimate = []	
+			self.cov_matrix   = []
+			self.par_error    = []
+			self.par_dim      = 0
+
+
+			# received parameters
+			self.X		  = results['X']
+			self.X_dim    = results['n_X']  
+			self.y        = results['y']
+			self.y_error  = results['y_error']
+			self.remove_errors = not results['errors']
+			self.n        = len(self.X)
+			self.fitted   = False
+			self.order    = order
+
+			self.par_dim = int(np.sum([binom(self.X_dim+k-1,k) for k in range(0,self.order+1)]))
+
+			print("Polynomial order  : ",self.order)
+			print("Features          : ",self.X_dim)
+			print("Degrees of Freedom: ",self.par_dim)
 
 
 
@@ -190,6 +175,7 @@ class multipoly:
 
 		else:
 			if True:
+				X = np.array(X)
 				k = self.par_estimate
 				n = len(X)
 				_sum_ = k[0]
@@ -245,14 +231,14 @@ class multipoly:
 		for dim_Q in range(1+2*self.order):
 
 			if dim_Q == 0:
-				Q = np.sum(1/np.power(self.y_errors,2))
+				Q = np.sum(1/np.power(self.y_error,2))
 
 			elif dim_Q == 1:
 				shape_Q = (self.X_dim,)
 				indexes_Q = [ele for ele in product(range(0, self.X_dim), repeat = dim_Q)]
 				Q = np.zeros(shape_Q)
 				for i in indexes_Q:
-					Q_val = np.array([self.X[j,i] / (self.y_errors[j] ** 2) for j in range(self.n)]).sum()
+					Q_val = np.array([self.X[j,i] / (self.y_error[j] ** 2) for j in range(self.n)]).sum()
 					Q = self.__update_value_from_index(Q,i,Q_val)
 
 			else:
@@ -260,7 +246,7 @@ class multipoly:
 				indexes_Q = [ele for ele in product(range(0, self.X_dim), repeat = dim_Q)] 
 				Q = np.zeros(shape_Q)
 				for index_list in indexes_Q:
-					Q_val = np.array([np.array([self.X[j,i]/(self.y_errors[j]**2) for i in index_list]).prod() for j in range(self.n)]).sum()
+					Q_val = np.array([np.array([self.X[j,i]/(self.y_error[j]**2) for i in index_list]).prod() for j in range(self.n)]).sum()
 					Q = self.__update_value_from_index(Q,index_list,Q_val)
 			
 			list_Q.append(Q)
@@ -341,8 +327,8 @@ class multipoly:
 			A = list_Q[0]
 			B = list_Q[1]
 			C = list_Q[2]
-			F = [np.array([self.y[j] / (self.y_errors[j] ** 2) for j in range(self.n)]).sum()]
-			G = [np.array([self.y[j]*self.X[j,i] / (self.y_errors[j] ** 2) for j in range(self.n)]).sum() for i in range(self.X_dim)]
+			F = [np.array([self.y[j] / (self.y_error[j] ** 2) for j in range(self.n)]).sum()]
+			G = [np.array([self.y[j]*self.X[j,i] / (self.y_error[j] ** 2) for j in range(self.n)]).sum() for i in range(self.X_dim)]
 
 			# First matrix row
 			m = [[0 for i in range(self.par_dim)] for j in range(self.par_dim)]
@@ -382,9 +368,9 @@ class multipoly:
 			C = list_Q[2]
 			D = list_Q[3]
 			E = list_Q[4]
-			F = [np.array([self.y[j] / (self.y_errors[j] ** 2) for j in range(self.n)]).sum()]
-			G = [np.array([self.y[j]*self.X[j,i] / (self.y_errors[j] ** 2) for j in range(self.n)]).sum() for i in range(self.X_dim)]
-			H = list([np.array([self.y[j]*self.X[j,i]*self.X[j,k] / (self.y_errors[j] ** 2) for j in range(self.n)]).sum() for i,k in product(range(self.X_dim),range(self.X_dim)) if i<=k])
+			F = [np.array([self.y[j] / (self.y_error[j] ** 2) for j in range(self.n)]).sum()]
+			G = [np.array([self.y[j]*self.X[j,i] / (self.y_error[j] ** 2) for j in range(self.n)]).sum() for i in range(self.X_dim)]
+			H = list([np.array([self.y[j]*self.X[j,i]*self.X[j,k] / (self.y_error[j] ** 2) for j in range(self.n)]).sum() for i,k in product(range(self.X_dim),range(self.X_dim)) if i<=k])
 
 			# First matrix row
 			m = [[0 for i in range(self.par_dim)] for j in range(self.par_dim)]

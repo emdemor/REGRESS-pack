@@ -24,6 +24,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.special import binom
+from regress.tools import _input_data
 
 dataset = pd.read_csv('examples/ex01_dataset.csv')
 X     = dataset['X'].values.reshape(-1,1)
@@ -45,35 +46,35 @@ if False:
 
 
 
-D = 3
-O = 2
-
-
-if D == 1:
-    dataset = pd.read_csv('examples/ex01_dataset.csv')
-    X     = dataset['X'].values.reshape(-1,1)
-    y     = dataset['y'].values.reshape(-1,1)
-    y_err = dataset['Erro'].values.reshape(-1,1)
-    fit = rg.multipoly(X,y,y_err,order=O)
-    fit.train()
-
-if D == 2:
-
-    dataset = pd.read_csv('examples/ex03_multilin_dataset.csv')
-    X = dataset.iloc[:,0:-2].values
-    y = dataset.iloc[:,2].values.reshape(-1,1)
-    y_err =  dataset.iloc[:,3].values.reshape(-1,1)
-    fit = rg.multipoly(X,y,y_errors = y_err,order=O)
-    fit.train()
-
-if D == 3:
-    
-    dataset = pd.read_csv('examples/Advertising.csv')
-    X = dataset[['TV', 'radio', 'newspaper']].values
-    y = dataset[['sales']].values
-    y_err =  False
-    fit = rg.multipoly(X,y,y_err,order=2)
-    fit.train()
+#D = 3
+#O = 2
+#
+#
+#if D == 1:
+#    dataset = pd.read_csv('examples/ex01_dataset.csv')
+#    X     = dataset['X'].values.reshape(-1,1)
+#    y     = dataset['y'].values.reshape(-1,1)
+#    y_err = dataset['Erro'].values.reshape(-1,1)
+#    fit = rg.multipoly(X,y,y_err,order=O)
+#    fit.train()
+#
+#if D == 2:
+#
+#    dataset = pd.read_csv('examples/ex03_multilin_dataset.csv')
+#    X = dataset.iloc[:,0:-2].values
+#    y = dataset.iloc[:,2].values.reshape(-1,1)
+#    y_err =  dataset.iloc[:,3].values.reshape(-1,1)
+#    fit = rg.multipoly(X,y,y_errors = y_err,order=O)
+#    fit.train()
+#
+#if D == 3:
+#    
+#    dataset = pd.read_csv('examples/Advertising.csv')
+#    X = dataset[['TV', 'radio', 'newspaper']].values
+#    y = dataset[['sales']].values
+#    y_err =  False
+#    fit = rg.multipoly(X,y,y_err,order=2)
+#    fit.train()
 #    dataset = pd.read_csv('examples/ex04_multilin_3.csv')
 #    X = dataset[['X','Y','Z']].values
 #    y = dataset[['F']].values
@@ -83,10 +84,19 @@ if D == 3:
     #print(y_err)
     
 
+#X,y,msg = _input_data(X,y)
+df = pd.read_csv('examples/Advertising.csv')
+
+fit = rg.multipoly(dataframe   = df,
+                      features = ['TV','radio'],
+                      target   = 'sales',
+                      order    = 2
+                      )
+fit.train()
 #print(X)
 #print(np.sum(np.power(fit.predict(X)-y,2)))
 #print(fit.predict(X[-1]),' ',y[-1])
-print(fit.predict(X))
+#print(fit.predict(X))
 
 
 # D = 3;
