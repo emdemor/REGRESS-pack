@@ -76,7 +76,10 @@ if D == 3:
     #print(y_err)
     
 
-print(fit.par_estimate)
+#print(X)
+#print(np.sum(np.power(fit.predict(X)-y,2)))
+#print(fit.predict(X[-1]),' ',y[-1])
+#print(fit.predict(X))
 
 
 # D = 3;

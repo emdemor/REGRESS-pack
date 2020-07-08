@@ -154,7 +154,7 @@ class linear:
 		Description
 		----------
 		After training, this method evaluates
-		y for a given X os a given list of X
+		y for a given list of X
 
 		Arguments
 		----------

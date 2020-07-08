@@ -84,7 +84,7 @@ class multipoly:
 				print('[Error] You must pass the values of errors')
 
 			# choose a list of ones to errors variable	
-			self.y_errors = np.ones(len(self.X))
+			self.y_errors = np.ones(len(self.X)).reshape(-1,1)
 
 			self.remove_errors = True
 
@@ -117,6 +117,8 @@ class multipoly:
 
 		else:
 			print('[error]: Number of feature vectors, targets are not the same.')
+
+
 
 
 	def train(self):
@@ -152,8 +154,7 @@ class multipoly:
 		k_list = list(np.array(np.matmul(MI,V)).reshape(self.par_dim,))
 
 		# Wrinting the parameter vector as a symmetric matrix
-		k = np.zeros((1+self.order,1+self.order))
-
+		#k = np.zeros((1+self.order,1+self.order))
 
 		# for i,j in product(range(self.X_dim),range(self.X_dim)):
 		# 	if i>=j:
@@ -168,9 +169,76 @@ class multipoly:
 		self.fitted        = True
 
 
-	def __get_tensor_structure(self):
+	def predict(self,X):
+		'''
+		Description
+		----------
+		After training, this method evaluates
+		y for a list of X
 
-		# List of auiliar structures of data
+		Arguments
+		----------
+		Not documented yet
+
+		Returns
+		----------
+		Not documented yet
+		
+		'''
+		if not self.fitted:
+			print('[error]: You must train first.')
+
+		else:
+			if True:
+				k = self.par_estimate
+				n = len(X)
+				_sum_ = k[0]
+
+				if np.shape(X) == (self.X_dim,):
+					X = np.array([X])
+					n = 1
+
+				for i in range(self.X_dim):
+					_sum_ += k[1+i]*X[:,i]
+
+				if self.order >= 2:
+					count = 1+self.X_dim
+					for i,j in product(range(self.X_dim),range(self.X_dim)):
+						if i<= j:
+							_sum_ += k[count]*X[:,i]*X[:,j]
+							count += 1
+
+				#print(_sum_,' ',n)
+
+				if n == 1:
+					result = np.array(_sum_)
+				else:
+					result = np.array(_sum_).reshape(n,1)
+
+				return result
+
+
+
+
+	def __get_tensor_structure(self):
+		'''
+		Description
+		----------
+		Generates the tensor structures used to evaluate
+		the matrix.
+
+		Arguments
+		----------
+		Not documented yet
+
+		Returns
+		----------
+		list_Q (list): a list containing the numpy.array structures constructed with the features an errors
+		list_Q_comps (list): a list with the size of each structure
+		
+		'''
+
+		# List of auxiliar structures of data
 		list_Q = []
 		list_Q_comps = []
 
@@ -200,27 +268,75 @@ class multipoly:
 
 		return [list_Q,list_Q_comps]
 
+
+
+
 	def __update_value_from_index(self,np_arr,indexes,new_value):
-	    
-	    s     = np_arr.size
-	    shape = np_arr.shape
-	    enum  = list(np.ndenumerate(np_arr))
-	    sing_index = [elem[0] for elem in enum].index(indexes)
-	    np_arr_temp = np_arr.reshape(s,)
-	    np_arr_temp[sing_index] = new_value
-	    return np_arr_temp.reshape(shape)
+		'''
+		Description
+		----------
+
+		Arguments
+		----------
+		Not documented yet
+
+		Returns
+		----------
+		Not documented yet
+		
+		'''
+		s     = np_arr.size
+		shape = np_arr.shape
+		enum  = list(np.ndenumerate(np_arr))
+		sing_index = [elem[0] for elem in enum].index(indexes)
+		np_arr_temp = np_arr.reshape(s,)
+		np_arr_temp[sing_index] = new_value
+		return np_arr_temp.reshape(shape)
+
+
 
 
 	def __part(self,np_arr,indexes):
-	    
-	    s     = np_arr.size
-	    shape = np_arr.shape
-	    enum  = list(np.ndenumerate(np_arr))
-	    sing_index = [elem[0] for elem in enum].index(indexes)
-	    np_arr_temp = np_arr.reshape(s,)
-	    return np_arr_temp[sing_index]
+		'''
+		Description
+		----------
+		Receives a array and a a list (or a tuple) returning the related component.
+
+		Arguments
+		----------
+		np_arr (numpy.array): a general numpy array
+		indexes (list or tuple): a list or tuple describing an elemento of np_arr
+
+		Returns
+		----------
+		(array type): element of np_arr in the
+		
+		'''
+		
+		s     = np_arr.size
+		shape = np_arr.shape
+		enum  = list(np.ndenumerate(np_arr))
+		sing_index = [elem[0] for elem in enum].index(indexes)
+		np_arr_temp = np_arr.reshape(s,)
+		return np_arr_temp[sing_index]
+
+
+
 
 	def __linear_system_struct_1(self,list_Q):
+		'''
+		Description
+		----------
+
+		Arguments
+		----------
+		Not documented yet
+
+		Returns
+		----------
+		Not documented yet
+		
+		'''
 		if self.order == 1:
 			A = list_Q[0]
 			B = list_Q[1]
@@ -245,7 +361,21 @@ class multipoly:
 
 
 
+
 	def __linear_system_struct_2(self,list_Q):
+		'''
+		Description
+		----------
+
+		Arguments
+		----------
+		Not documented yet
+
+		Returns
+		----------
+		Not documented yet
+		
+		'''
 		if self.order == 2:
 			A = list_Q[0]
 			B = list_Q[1]

@@ -381,7 +381,7 @@ B_{1} & C_{11} & \cdots & C_{1\mathbb{D}} & D_{111} & \cdots & D_{1\mathbb{D}\ma
 B_{D} & C_{\mathbb{D}1} & \cdots & C_{\mathbb{D}\mathbb{D}} & D_{\mathbb{D}11} & \cdots & D_{\mathbb{D}\mathbb{D}\mathbb{D}}\\
 C_{11} & D_{111} & \cdots & D_{\mathbb{D}111} & E_{1111} & \cdots & E_{11\mathbb{D}\mathbb{D}}\\
 \vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots\\
-C_{\mathbb{D}\mathbb{D}} & D_{a\mathbb{D}\mathbb{D}} & \cdots & D_{\mathbb{D}\mathbb{D}\mathbb{D}} & E_{11\mathbb{D}\mathbb{D}} & \cdots & E_{\mathbb{D}\mathbb{D}\mathbb{D}\mathbb{D}}
+C_{\mathbb{D}\mathbb{D}} & D_{1\mathbb{D}\mathbb{D}} & \cdots & D_{\mathbb{D}\mathbb{D}\mathbb{D}} & E_{11\mathbb{D}\mathbb{D}} & \cdots & E_{\mathbb{D}\mathbb{D}\mathbb{D}\mathbb{D}}
 \end{array}\right]\left[\begin{array}{c}
 a\\
 b^{1}\\
@@ -398,8 +398,125 @@ G^{\mathbb{D}}\\
 H^{11}\\
 \vdots\\
 H^{\mathbb{D}\mathbb{D}}
-\end{array}\right]\label{eq:6}
+\end{array}\right]\,.\label{eq:6}
 \end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The solution for the system is:
+\begin_inset Formula 
+\begin{equation}
+\left[\begin{array}{c}
+a\\
+b^{1}\\
+\vdots\\
+b^{\mathbb{D}}\\
+c^{1}\\
+\vdots\\
+c^{\mathbb{D}}
+\end{array}\right]=\left[\begin{array}{ccccccc}
+A & B_{1} & \cdots & B_{\mathbb{D}} & C_{11} & \cdots & C_{\mathbb{D}\mathbb{D}}\\
+B_{1} & C_{11} & \cdots & C_{1\mathbb{D}} & D_{111} & \cdots & D_{1\mathbb{D}\mathbb{D}}\\
+\vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots\\
+B_{D} & C_{\mathbb{D}1} & \cdots & C_{\mathbb{D}\mathbb{D}} & D_{\mathbb{D}11} & \cdots & D_{\mathbb{D}\mathbb{D}\mathbb{D}}\\
+C_{11} & D_{111} & \cdots & D_{\mathbb{D}111} & E_{1111} & \cdots & E_{11\mathbb{D}\mathbb{D}}\\
+\vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots\\
+C_{\mathbb{D}\mathbb{D}} & D_{1\mathbb{D}\mathbb{D}} & \cdots & D_{\mathbb{D}\mathbb{D}\mathbb{D}} & E_{11\mathbb{D}\mathbb{D}} & \cdots & E_{\mathbb{D}\mathbb{D}\mathbb{D}\mathbb{D}}
+\end{array}\right]^{-1}\left[\begin{array}{c}
+A\\
+G^{1}\\
+\vdots\\
+G^{\mathbb{D}}\\
+H^{11}\\
+\vdots\\
+H^{\mathbb{D}\mathbb{D}}
+\end{array}\right]\,.\label{eq:7}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The parametric correlation matrix is:
+\begin_inset Formula 
+\begin{equation}
+\mathbb{C}=\left[\begin{array}{ccccccc}
+A & B_{1} & \cdots & B_{\mathbb{D}} & C_{11} & \cdots & C_{\mathbb{D}\mathbb{D}}\\
+B_{1} & C_{11} & \cdots & C_{1\mathbb{D}} & D_{111} & \cdots & D_{1\mathbb{D}\mathbb{D}}\\
+\vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots\\
+B_{D} & C_{\mathbb{D}1} & \cdots & C_{\mathbb{D}\mathbb{D}} & D_{\mathbb{D}11} & \cdots & D_{\mathbb{D}\mathbb{D}\mathbb{D}}\\
+C_{11} & D_{111} & \cdots & D_{\mathbb{D}111} & E_{1111} & \cdots & E_{11\mathbb{D}\mathbb{D}}\\
+\vdots & \vdots & \ddots & \vdots & \vdots & \ddots & \vdots\\
+C_{\mathbb{D}\mathbb{D}} & D_{1\mathbb{D}\mathbb{D}} & \cdots & D_{\mathbb{D}\mathbb{D}\mathbb{D}} & E_{11\mathbb{D}\mathbb{D}} & \cdots & E_{\mathbb{D}\mathbb{D}\mathbb{D}\mathbb{D}}
+\end{array}\right]^{-1}\,.\label{eq:8}
+\end{equation}
+
+\end_inset
+
+The variance on parameters are:
+\begin_inset Formula 
+\[
+\sigma_{a}^{\,2}=\mathbb{C}_{1,1}\,\,\,\,\sigma_{b^{i}}^{\,2}=\mathbb{C}_{1+i,1+i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Errors Propagation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+f=a+b^{i}x_{\left(i\right)}+c^{ij}x_{\left(i\right)}x_{\left(j\right)}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\sigma_{f}^{2}= & \left(\frac{\partial f}{\partial a}\right)^{2}\sigma_{a}^{2}+\sum_{i}\left(\frac{\partial f}{\partial b^{i}}\right)^{2}\sigma_{b^{i}}^{2}+\sum_{i}\sum_{j>i}\left(\frac{\partial f}{\partial c^{ij}}\right)^{2}\sigma_{c^{ij}}^{2}+\\
+ & +2\frac{\partial f}{\partial a}\frac{\partial f}{\partial b^{i}}\sigma_{ab^{i}}+2\frac{\partial f}{\partial a}\sum_{i}\sum_{j>i}\left(\frac{\partial f}{\partial c^{ij}}\sigma_{ac^{ij}}\right)+\\
+ & +\sum_{k}\sum_{i}\sum_{j>i}\frac{\partial f}{\partial b^{k}}\frac{\partial f}{\partial c^{ij}}\sigma_{b^{k}c^{ij}}
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\sigma_{f}^{2}= & \sigma_{a}^{2}+\sum_{i}x_{\left(i\right)}^{\,2}\sigma_{b^{i}}^{2}+\sum_{i}\sum_{j>i}x_{\left(i\right)}^{\,2}x_{\left(j\right)}^{\,2}\sigma_{c^{ij}}^{2}+\\
+ & +2x_{\left(i\right)}\sigma_{ab^{i}}+2\sum_{i}\sum_{j>i}x_{\left(i\right)}x_{\left(j\right)}\sigma_{ac^{ij}}+\\
+ & +\sum_{k}\sum_{i}\sum_{j>i}x_{\left(k\right)}x_{\left(i\right)}x_{\left(j\right)}\sigma_{b^{k}c^{ij}}
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\sigma_{f}^{2}= & \sigma_{a}^{2}+\sum_{i}\left[x_{\left(i\right)}^{\,2}\sigma_{b^{i}}^{2}+\sum_{j>i}x_{\left(i\right)}^{\,2}x_{\left(j\right)}^{\,2}\sigma_{c^{ij}}^{2}+2x_{\left(i\right)}\sigma_{ab^{i}}\right.+\\
+ & +\left.2\sum_{j>i}x_{\left(i\right)}x_{\left(j\right)}\sigma_{ac^{ij}}+\sum_{k}\sum_{j>i}x_{\left(k\right)}x_{\left(i\right)}x_{\left(j\right)}\sigma_{b^{k}c^{ij}}\right]
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\sigma_{f}^{2}= & \sigma_{a}^{2}+\sum_{i}\left[x_{\left(i\right)}^{\,2}\sigma_{b^{i}}^{2}+2x_{\left(i\right)}\sigma_{ab^{i}}+\sum_{j>i}x_{\left(i\right)}^{\,2}x_{\left(j\right)}^{\,2}\sigma_{c^{ij}}^{2}\right.+\\
+ & +\left.2\sum_{j>i}x_{\left(i\right)}x_{\left(j\right)}\sigma_{ac^{ij}}+\sum_{k}\sum_{j>i}x_{\left(k\right)}x_{\left(i\right)}x_{\left(j\right)}\sigma_{b^{k}c^{ij}}\right]
+\end{align*}
 
 \end_inset
 

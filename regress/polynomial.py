@@ -152,7 +152,7 @@ class polynomial:
 		Description
 		----------
 		After training, this method evaluates
-		y for a given X os a given list of X
+		y for a given X of X
 
 		Arguments
 		----------
@@ -227,6 +227,8 @@ class polynomial:
 					for j in range(0,1+self.order):
 						_sum_ += c[i,j] * X**i * X**j
 				return _sum_ ** 0.5
+
+
 
 	def plot(self,nPoints = __PLOT_POINTS__,**kwargs):
 		'''
